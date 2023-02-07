@@ -1,99 +1,91 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:audioplayers/src/audio_cache.dart';
 
 
 void main() {
-  runApp(MaterialApp( home: SafeArea(
-    child: Scaffold(
-      body: QuizPage(),
+  runApp(MaterialApp(
+    home:Scaffold(
+      appBar: AppBar(title: Text('XYLOPHONE'),centerTitle: true,),
+      body:XyloPage(),
     ),
-  ),
-  )); }
-class Question {
-  final String questionText; final bool answer;
-  Question({required this.questionText, required this.answer});
+  ));
 }
+class XyloPage extends StatefulWidget {
+  const XyloPage({Key? key}) : super(key: key);
 
-class Questions {
-  List<Question> questionBank = [
-    Question(questionText: "who was ginny weasly", answer: true),
-    Question(questionText: "Do you like Ted Bunty", answer: true),
-    Question(questionText: "Do you like killing", answer: false),
-    Question(questionText: "Do you like watching serial killer documentaries", answer: true),
-    Question(questionText: "Do you hate people", answer: true),
-  ]; }
-
-class QuizPage extends StatefulWidget {
-  const QuizPage({Key? key}) : super(key: key);
   @override
-  _QuizPageState createState() => _QuizPageState();
+  _XyloPageState createState() => _XyloPageState();
 }
 
-class _QuizPageState extends State<QuizPage> {
-  int questionNumber=0; int currentScore=0;
-  Questions questions=Questions(); void updateQuestionNumber(){
-    setState(() {
-      questionNumber=questionNumber+1; print('$questionNumber');
-    }); }
-
-
-  void updateCurrentScore(bool choice,int question_number){
-    if(questions.questionBank.length==question_number){
-      print('End of Questions');
-    } else{
-      if(questions.questionBank[question_number].answer==choice){
-        setState(() {
-          currentScore++;
-        });
-      }
-    } } bool checkQuestionNumber(int questionNumber){
-    return questionNumber < questions.questionBank.length? true: false ;
+class _XyloPageState extends State<XyloPage> {
+  void playSound(int noteNumber) {
+    final player = AudioCache();
+    player.play("note$noteNumber.wav");
   }
-
-
   @override
   Widget build(BuildContext context) {
-    return Container( child: Column(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Center( child: Text(
-          checkQuestionNumber(questionNumber)?
-          questions.questionBank[questionNumber].questionText.toString()
-              :"End", style: TextStyle(fontSize: 40.0), ),
-        ),
-        SizedBox(height: 20.0),
-        if (checkQuestionNumber(questionNumber))
-          ElevatedButton( onPressed: () { setState(() {
-            if (questionNumber == questions.questionBank.length) {
-              print("End of questions");
-            } else {
-              updateCurrentScore(true, questionNumber); updateQuestionNumber();
-            }
-          }); }, child: Text('True'),
+        Expanded(child: TextButton(
+          style: TextButton.styleFrom(
+              backgroundColor: Colors.indigo
           ),
-        SizedBox(width: 20.0),
-        if (checkQuestionNumber(questionNumber))
-          ElevatedButton( onPressed: () { setState(() {
-            if (questionNumber == questions.questionBank.length) {
-              print("End of questions");
-            } else {
-              updateCurrentScore(false, questionNumber); updateQuestionNumber();
-            }
-          }); }, child: Text('False'),
+          onPressed: () {
+            playSound(1);
+          },
+          child: Text('First'),
+        ),),
+        Expanded(child: TextButton(
+          style: TextButton.styleFrom(
+              backgroundColor: Colors.cyanAccent
           ),
-        SizedBox( height: 100.0,
-        ),
-        SizedBox( height: 50.0,
-        ),
-        Padding( padding: const EdgeInsets.all(30.0), child: Center( child: Text( "Current Score is:", style: TextStyle(fontSize: 30),
-        ),
-        ),
-        ),
-        Padding( padding: const EdgeInsets.all(30.0), child: Center( child: Text( '${currentScore}', style: TextStyle(fontSize: 30),
-        ),
-        ),
-        ),
+          onPressed: () {
+            playSound(2);
+          }, child: Text('Second'),
+        ),),
+        Expanded(child: TextButton(
+          style: TextButton.styleFrom(
+              backgroundColor: Colors.green
+          ),
+          onPressed: () {
+            playSound(3);
+          }, child: Text('Third'),
+        ),),
+        Expanded(child: TextButton(
+          style: TextButton.styleFrom(
+              backgroundColor: Colors.orange
+          ),
+          onPressed: () {
+            playSound(4);
+          }, child: Text('Fourth'),
+        ),),
+        Expanded(child: TextButton(
+          style: TextButton.styleFrom(
+              backgroundColor: Colors.purple
+          ),
+          onPressed: () {
+            playSound(5);
+          }, child: Text('Fifth'),
+        ),),
+        Expanded(child: TextButton(
+          style: TextButton.styleFrom(
+              backgroundColor: Colors.blue
+          ),
+          onPressed: () {
+            playSound(6);
+          }, child: Text('Sixth'),
+        ),),
+        Expanded(child: TextButton(
+          style: TextButton.styleFrom(
+              backgroundColor: Colors.red
+          ),
+          onPressed: () {
+            playSound(7);
+          }, child: Text('Seventh'),
+        ),),
       ],
-    ),
-    ); // Build the Widget Tree here
+    );
   }
 }
