@@ -1,72 +1,99 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
 
 void main() {
-  runApp(MaterialApp(home: Scaffold(
-    appBar: AppBar(title: Text("this is dicepage"),centerTitle: true,),
-    body: Dicepage(),
+  runApp(MaterialApp( home: SafeArea(
+    child: Scaffold(
+      body: QuizPage(),
+    ),
   ),
-  )
-  );
+  )); }
+class Question {
+  final String questionText; final bool answer;
+  Question({required this.questionText, required this.answer});
 }
 
-class Dicepage extends StatefulWidget {
+class Questions {
+  List<Question> questionBank = [
+    Question(questionText: "who was ginny weasly", answer: true),
+    Question(questionText: "Do you like Ted Bunty", answer: true),
+    Question(questionText: "Do you like killing", answer: false),
+    Question(questionText: "Do you like watching serial killer documentaries", answer: true),
+    Question(questionText: "Do you hate people", answer: true),
+  ]; }
+
+class QuizPage extends StatefulWidget {
+  const QuizPage({Key? key}) : super(key: key);
   @override
-  const Dicepage({Key?key}) : super(key: key);
-
-
-
-    _DicePageState createState()=> _DicePageState();
-
+  _QuizPageState createState() => _QuizPageState();
 }
 
-class _DicePageState extends State<Dicepage> {
-  @override
-
-  int left=1;
-  int right=2;
-
-  void changeFace(){
-
+class _QuizPageState extends State<QuizPage> {
+  int questionNumber=0; int currentScore=0;
+  Questions questions=Questions(); void updateQuestionNumber(){
     setState(() {
+      questionNumber=questionNumber+1; print('$questionNumber');
+    }); }
 
-      left=Random().nextInt(6)+1;
-      right=Random().nextInt(6)+1;
 
-    });
-
+  void updateCurrentScore(bool choice,int question_number){
+    if(questions.questionBank.length==question_number){
+      print('End of Questions');
+    } else{
+      if(questions.questionBank[question_number].answer==choice){
+        setState(() {
+          currentScore++;
+        });
+      }
+    } } bool checkQuestionNumber(int questionNumber){
+    return questionNumber < questions.questionBank.length? true: false ;
   }
 
+
+  @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-
-    return Center(
-      child: Container(
-        child: Row(
-          children: [
-            Expanded(
-              flex:1,
-              child: TextButton(
-                style: TextButton.styleFrom(backgroundColor:Colors.yellowAccent), onPressed: () { changeFace(); },
-                child: Image.asset("images/dice$left.png"),
-              ),
-            ),
-
-            Expanded(
-              flex: 1,
-              child: TextButton(
-                style:TextButton.styleFrom(backgroundColor: Colors.orange),
-                onPressed: () { changeFace(); }, child:Image.asset("images/dice$right.png"),
-
-              )
-            )
-          ],
+    return Container( child: Column(
+      children: [
+        Center( child: Text(
+          checkQuestionNumber(questionNumber)?
+          questions.questionBank[questionNumber].questionText.toString()
+              :"End", style: TextStyle(fontSize: 40.0), ),
         ),
-      ),
-
-    );
-    throw UnimplementedError();
+        SizedBox(height: 20.0),
+        if (checkQuestionNumber(questionNumber))
+          ElevatedButton( onPressed: () { setState(() {
+            if (questionNumber == questions.questionBank.length) {
+              print("End of questions");
+            } else {
+              updateCurrentScore(true, questionNumber); updateQuestionNumber();
+            }
+          }); }, child: Text('True'),
+          ),
+        SizedBox(width: 20.0),
+        if (checkQuestionNumber(questionNumber))
+          ElevatedButton( onPressed: () { setState(() {
+            if (questionNumber == questions.questionBank.length) {
+              print("End of questions");
+            } else {
+              updateCurrentScore(false, questionNumber); updateQuestionNumber();
+            }
+          }); }, child: Text('False'),
+          ),
+        SizedBox( height: 100.0,
+        ),
+        SizedBox( height: 50.0,
+        ),
+        Padding( padding: const EdgeInsets.all(30.0), child: Center( child: Text( "Current Score is:", style: TextStyle(fontSize: 30),
+        ),
+        ),
+        ),
+        Padding( padding: const EdgeInsets.all(30.0), child: Center( child: Text( '${currentScore}', style: TextStyle(fontSize: 30),
+        ),
+        ),
+        ),
+      ],
+    ),
+    ); // Build the Widget Tree here
   }
 }
-
